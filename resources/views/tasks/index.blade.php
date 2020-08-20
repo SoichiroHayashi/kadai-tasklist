@@ -26,6 +26,6 @@
     @endif
     
     {{-- メッセージ作成ページへのリンク --}}
-    {!! link_to_route('tasks.create', '新規メッセージの投稿', [], ['class' => 'btn btn-primary']) !!}
+    {!! link_to_route('tasks.create', '新規コンテンツの投稿', [], ['class' => 'btn btn-primary']) !!}
     
 @endsection
