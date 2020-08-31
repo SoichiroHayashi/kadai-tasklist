@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Tasklist;
+use App\Task;
+use Illuminate\Support\Facades\Auth;
 
 class TasksController extends Controller
 {
@@ -14,10 +15,21 @@ class TasksController extends Controller
      */
     public function index()
     {
-        $tasks = Tasklist::all();
-        return view('tasks.index', [
-            'tasks' => $tasks,
-        ]);
+        $data = [];
+        if (\Auth::check()) { // 認証済みの場合
+            // 認証済みユーザを取得
+            $user = \Auth::user();
+            // ユーザの投稿の一覧を作成日時の降順で取得
+            $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+
+            $data = [
+                'user' => $user,
+                'tasks' => $tasks,
+            ];
+        }
+
+        // Welcomeビューでそれらを表示
+        return view('welcome', $data);
     }
 
     /**
@@ -27,7 +39,7 @@ class TasksController extends Controller
      */
     public function create()
     {
-        $task = new Tasklist;
+        $task = new Task;
         
         return view ("tasks.create",[
             "task" => $task,
@@ -48,7 +60,8 @@ class TasksController extends Controller
             "status" => "required|max:10",
             ]);
         //メッセージ作成
-        $task = new Tasklist;
+        $task = new Task;
+        $task->user_id = Auth::user()->id;
         $task->status = $request->status;
         $task->content = $request->content;
         $task->save();
@@ -66,7 +79,7 @@ class TasksController extends Controller
     public function show($id)
     {
         // idの値でメッセージを検索して取得
-        $task = Tasklist::findOrFail($id);
+        $task = Task::findOrFail($id);
 
         // メッセージ詳細ビューでそれを表示
         return view('tasks.show', [
@@ -83,7 +96,7 @@ class TasksController extends Controller
     public function edit($id)
     {
         // idの値でメッセージを検索して取得
-        $task = Tasklist::findOrFail($id);
+        $task = Task::findOrFail($id);
 
         // メッセージ編集ビューでそれを表示
         return view('tasks.edit', [
@@ -106,7 +119,7 @@ class TasksController extends Controller
             "status" => "required|max:10",
             ]);
         // idの値でメッセージを検索して取得
-        $task = Tasklist::findOrFail($id);
+        $task = Task::findOrFail($id);
         // メッセージを更新
         $task->status = $request->status;
         $task->content = $request->content;
@@ -125,7 +138,7 @@ class TasksController extends Controller
     public function destroy($id)
     {
         // idの値でメッセージを検索して取得
-        $task = Tasklist::findOrFail($id);
+        $task = Task::findOrFail($id);
         // メッセージを削除
         $task->delete();
 
