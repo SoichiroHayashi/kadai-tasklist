@@ -11,11 +11,9 @@
 |
 */
 
-<<<<<<< HEAD
+
 Route::get('/', 'TasksController@index');
 Route::resource('tasks', 'TasksController');
-=======
->>>>>>> 1f552c40dfd67b7411a1f79708ff3e7388e723c5
 
 //サインイン
 Route::get('signup', 'Auth\RegisterController@showRegistrationForm')->name('signup.get');
