@@ -25,5 +25,5 @@ Route::get('logout', 'Auth\LoginController@logout')->name('logout.get');
 
 //ログインしているユーザのみ投稿を許可
 Route::group(['middleware' => ['auth']], function () {
-    Route::resource('tasks', 'TasksController', ['only' => ['index' , 'show' , 'store', 'destroy']]);
+    Route::resource('tasks', 'TasksController', ['only' => ['index' ,"update", 'show' , 'store', 'destroy']]);
 });
